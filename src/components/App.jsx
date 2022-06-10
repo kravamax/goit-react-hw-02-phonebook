@@ -1,16 +1,67 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
-  );
-};
+import React, { Component } from 'react';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import contactsData from './contacts.json';
+
+import ContactForm from './ContactForm';
+import Filter from './Filter';
+import ContactList from './ContactList';
+import Container from './Container';
+
+export class App extends Component {
+  state = {
+    contacts: contactsData,
+    filter: '',
+  };
+
+  addContact = contact => {
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, contact],
+    }));
+
+    Notify.success(`${contact.name} added to contacts!`);
+  };
+
+  changeFilter = event => {
+    const { value } = event.currentTarget;
+    this.setState({ filter: value });
+  };
+
+  filterByName = () => {
+    const { contacts, filter } = this.state;
+    const normilizeFilter = filter.toLocaleLowerCase();
+
+    const filteredData = contacts.filter(({ name }) =>
+      name.toLocaleLowerCase().includes(normilizeFilter)
+    );
+
+    return filteredData;
+  };
+
+  DeleteContact = (idContact, name) => {
+    Notify.info(`${name} was deleted from contacts!`);
+
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== idContact),
+    }));
+  };
+
+  render() {
+    const filterList = this.filterByName();
+
+    return (
+      <div>
+        <Container>
+          <h1>Phonebook</h1>
+          <ContactForm
+            contacts={this.state.contacts}
+            onSubmit={this.addContact}
+          />
+
+          <h2>Contacts</h2>
+          <Filter value={this.state.filter} onChange={this.changeFilter} />
+          <ContactList list={filterList} onDeleteClick={this.DeleteContact} />
+        </Container>
+      </div>
+    );
+  }
+}
