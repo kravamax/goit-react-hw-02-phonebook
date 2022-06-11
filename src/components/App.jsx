@@ -37,7 +37,7 @@ export class App extends Component {
     return filteredData;
   };
 
-  DeleteContact = (idContact, name) => {
+  deleteContact = (idContact, name) => {
     Notify.info(`${name} was deleted from contacts!`);
 
     this.setState(prevState => ({
@@ -45,21 +45,27 @@ export class App extends Component {
     }));
   };
 
-  render() {
-    const filterList = this.filterByName();
+  getNamesListOfContacts = () => {
+    const { contacts } = this.state;
+    return contacts.map(({ name }) => name);
+  };
 
+  render() {
     return (
       <div>
         <Container>
           <h1>Phonebook</h1>
           <ContactForm
-            contacts={this.state.contacts}
+            contacts={this.getNamesListOfContacts()}
             onSubmit={this.addContact}
           />
 
           <h2>Contacts</h2>
           <Filter value={this.state.filter} onChange={this.changeFilter} />
-          <ContactList list={filterList} onDeleteClick={this.DeleteContact} />
+          <ContactList
+            list={this.filterByName()}
+            onDeleteClick={this.deleteContact}
+          />
         </Container>
       </div>
     );

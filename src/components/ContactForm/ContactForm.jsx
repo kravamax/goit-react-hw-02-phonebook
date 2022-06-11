@@ -37,7 +37,7 @@ class ContactForm extends Component {
     const normalizedNameContact = addNameContact.toLowerCase();
 
     return this.props.contacts.some(
-      ({ name }) => name.toLowerCase() === normalizedNameContact
+      name => name.toLowerCase() === normalizedNameContact
     );
   };
 
@@ -86,12 +86,7 @@ class ContactForm extends Component {
 }
 
 ContactForm.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
+  contacts: PropTypes.arrayOf(PropTypes.string.isRequired),
   onSubmit: PropTypes.func.isRequired,
 };
 
